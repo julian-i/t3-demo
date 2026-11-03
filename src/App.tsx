@@ -12,10 +12,21 @@ const initialTasks: Task[] = [
 function App() {
   const [tasks, setTasks] = useState(initialTasks)
   const [activeNav, setActiveNav] = useState('Overview')
+  const [supportOpen, setSupportOpen] = useState(false)
+  const [supportEmail, setSupportEmail] = useState('')
+  const [supportMessage, setSupportMessage] = useState('')
   const completed = tasks.filter((task) => task.done).length
 
   function addTask() {
     setTasks((current) => [...current, { title: 'Explore the T3 Code workflow', project: 'T3 demo', color: 'violet' }])
+  }
+
+  function submitSupport(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    console.log('Support request submitted', { email: supportEmail, message: supportMessage })
+    setSupportEmail('')
+    setSupportMessage('')
+    setSupportOpen(false)
   }
 
   return (
@@ -27,7 +38,7 @@ function App() {
         <nav aria-label="Main navigation">
           {['Overview', 'My tasks', 'Projects', 'Inbox'].map((item, index) => <button key={item} className={`nav-item ${activeNav === item ? 'selected' : ''}`} onClick={() => setActiveNav(item)}><span className="nav-icon">{['◫', '☑', '▦', '✉'][index]}</span>{item}{item === 'Inbox' && <span className="nav-count">3</span>}</button>)}
         </nav>
-        <div className="sidebar-bottom"><div className="help-card"><span className="help-icon">✦</span><strong>Make something great</strong><p>Your next idea is one prompt away.</p><button onClick={addTask}>Try a new task <span>↗</span></button></div><button className="profile"><span className="profile-avatar">JI</span><span><strong>Julian I.</strong><small>Personal account</small></span><span className="chevron">···</span></button></div>
+        <div className="sidebar-bottom"><div className="help-card"><span className="help-icon">✦</span><strong>Make something great</strong><p>Your next idea is one prompt away.</p><button onClick={addTask}>Try a new task <span>↗</span></button></div>{supportOpen && <form className="support-form" onSubmit={submitSupport}><label>Email<input type="email" value={supportEmail} onChange={(event) => setSupportEmail(event.target.value)} required /></label><label>Message<textarea value={supportMessage} onChange={(event) => setSupportMessage(event.target.value)} required rows={3} /></label><button type="submit">Send message</button></form>}<button className="support-trigger" aria-expanded={supportOpen} onClick={() => setSupportOpen((open) => !open)}>Support</button><button className="profile"><span className="profile-avatar">JI</span><span><strong>Julian I.</strong><small>Personal account</small></span><span className="chevron">···</span></button></div>
       </aside>
 
       <main className="main-content">
